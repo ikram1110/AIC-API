@@ -8,7 +8,8 @@ const {
   roomController,
   unitController,
   departmentController,
-  classController,
+  gradeController,
+  ptkTypeController,
   positionController,
   employeeStatusController,
   classroomController,
@@ -55,11 +56,17 @@ router.get('/department/:id', departmentController.read) //select by id
 router.put('/department/:id', departmentController.update) //update
 router.delete('/department/:id', departmentController.delete) //delete
 
-router.post('/class', classController.create) //insert
-router.get('/class', classController.read) //select all
-router.get('/class/:id', classController.read) //select by id
-router.put('/class/:id', classController.update) //update
-router.delete('/class/:id', classController.delete) //delete
+router.post('/grade', gradeController.create) //insert
+router.get('/grade', gradeController.read) //select all
+router.get('/grade/:id', gradeController.read) //select by id
+router.put('/grade/:id', gradeController.update) //update
+router.delete('/grade/:id', gradeController.delete) //delete
+
+router.post('/ptk-type', ptkTypeController.create) //insert
+router.get('/ptk-type', ptkTypeController.read) //select all
+router.get('/ptk-type/:id', ptkTypeController.read) //select by id
+router.put('/ptk-type/:id', ptkTypeController.update) //update
+router.delete('/ptk-type/:id', ptkTypeController.delete) //delete
 
 router.post('/position', positionController.create) //insert
 router.get('/position', positionController.read) //select all

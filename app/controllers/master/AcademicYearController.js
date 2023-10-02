@@ -3,10 +3,23 @@ const { AcademicYear } = require('@models')
 class AcademicYearController {
   async create(req, res) {
     try {
+      let act = req.body.active
+      if (typeof act === 'string') {
+        if (act === 'true') act = true
+      }
+      if (act === true) {
+        await AcademicYear.update(
+          {
+            active: false,
+          },
+          { where: {} }
+        )
+      }
       const data = await AcademicYear.create(req.body)
       res.status(201).json(data)
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Create data failed' })
     }
   }
 
@@ -15,7 +28,7 @@ class AcademicYearController {
     try {
       let data = null
       if (id === undefined) {
-        data = await AcademicYear.findAll()
+        data = await AcademicYear.findAll({ order: [['createdAt', 'DESC']] })
       } else {
         data = await AcademicYear.findByPk(id)
       }
@@ -25,13 +38,26 @@ class AcademicYearController {
         res.status(200).json(data)
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Read data failed' })
     }
   }
 
   async update(req, res) {
     const { id } = req.params
     try {
+      let act = req.body.active
+      if (typeof act === 'string') {
+        if (act === 'true') act = true
+      }
+      if (act === true) {
+        await AcademicYear.update(
+          {
+            active: false,
+          },
+          { where: {} }
+        )
+      }
       const [updatedRowsCount, updatedRows] = await AcademicYear.update(
         req.body,
         {
@@ -45,7 +71,8 @@ class AcademicYearController {
         res.status(200).json(updatedRows[0])
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Update data failed' })
     }
   }
 
@@ -59,7 +86,8 @@ class AcademicYearController {
         res.status(204).end()
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Delete data failed' })
     }
   }
 }

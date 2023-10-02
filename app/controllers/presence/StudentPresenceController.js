@@ -1,16 +1,17 @@
 const {
-  Classroom,
+  StudentPresence,
   Unit,
+  AcademicYear,
+  Classroom,
+  LessonSchedule,
   Employee,
-  Department,
-  Building,
-  Room,
+  Student,
 } = require('@models')
 
-class ClassroomController {
+class StudentPresenceController {
   async create(req, res) {
     try {
-      const data = await Classroom.create(req.body)
+      const data = await StudentPresence.create(req.body)
       res.status(201).json(data)
     } catch (error) {
       console.log(error)
@@ -23,11 +24,26 @@ class ClassroomController {
     try {
       let data = null
       if (id === undefined) {
-        data = await Classroom.findAll({
+        data = await StudentPresence.findAll({
           include: [
             {
               model: Unit,
               as: 'unit',
+              attributes: ['name'],
+            },
+            {
+              model: AcademicYear,
+              as: 'academicYear',
+              attributes: ['name'],
+            },
+            {
+              model: Classroom,
+              as: 'classroom',
+              attributes: ['name'],
+            },
+            {
+              model: LessonSchedule,
+              as: 'lessonSchedule',
               attributes: ['name'],
             },
             {
@@ -36,28 +52,24 @@ class ClassroomController {
               attributes: ['name'],
             },
             {
-              model: Department,
-              as: 'department',
-              attributes: ['name'],
-            },
-            {
-              model: Building,
-              as: 'building',
-              attributes: ['name'],
-            },
-            {
-              model: Room,
-              as: 'room',
-              attributes: ['name'],
+              model: Student,
+              as: 'student',
+              attributes: ['nipd', 'nisn', 'name'],
             },
           ],
-          order: [['code', 'ASC']],
+          where: {
+            idUnit: req.query.idUnit,
+            idAcademicYear: req.query.idAcademicYear,
+            idClassroom: req.query.idClassroom,
+            idLessonSchedule: req.query.idLessonSchedule,
+          },
+          order: [[{ model: Student, as: 'student' }, 'nipd', 'ASC']],
         })
       } else {
-        data = await Classroom.findByPk(id)
+        data = await StudentPresence.findByPk(id)
       }
       if (!data) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'StudentPresence not found' })
       } else {
         res.status(200).json(data)
       }
@@ -70,12 +82,15 @@ class ClassroomController {
   async update(req, res) {
     const { id } = req.params
     try {
-      const [updatedRowsCount, updatedRows] = await Classroom.update(req.body, {
-        where: { id },
-        returning: true,
-      })
+      const [updatedRowsCount, updatedRows] = await StudentPresence.update(
+        req.body,
+        {
+          where: { id },
+          returning: true,
+        }
+      )
       if (updatedRowsCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'StudentPresence not found' })
       } else {
         res.status(200).json(updatedRows[0])
       }
@@ -88,9 +103,9 @@ class ClassroomController {
   async delete(req, res) {
     const { id } = req.params
     try {
-      const deletedRowCount = await Classroom.destroy({ where: { id } })
+      const deletedRowCount = await StudentPresence.destroy({ where: { id } })
       if (deletedRowCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'StudentPresence not found' })
       } else {
         res.status(204).end()
       }
@@ -101,5 +116,5 @@ class ClassroomController {
   }
 }
 
-const classroomController = new ClassroomController()
-module.exports = classroomController
+const studentPresenceController = new StudentPresenceController()
+module.exports = studentPresenceController

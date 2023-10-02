@@ -1,6 +1,6 @@
 'use strict'
 const { Model } = require('sequelize')
-const uuidv4 = require('uuidv4')
+const { uuid } = require('uuidv4')
 
 module.exports = (sequelize, DataTypes) => {
   class Employee extends Model {
@@ -15,6 +15,23 @@ module.exports = (sequelize, DataTypes) => {
         as: 'unit',
         foreignKey: 'idUnit',
       })
+      Employee.belongsTo(models.PtkType, {
+        as: 'ptkType',
+        foreignKey: 'idPtkType',
+      })
+      Employee.belongsTo(models.EmployeeStatus, {
+        as: 'employeeStatus',
+        foreignKey: 'idEmployeeStatus',
+      })
+      Employee.belongsTo(models.Grade, {
+        as: 'grade',
+        foreignKey: 'idGrade',
+      })
+      Employee.hasOne(models.Classroom, { foreignKey: 'idEmployee' })
+      Employee.hasMany(models.LessonSchedule, { foreignKey: 'idEmployee' })
+      Employee.hasMany(models.StudentPresence, { foreignKey: 'idEmployee' })
+      Employee.hasMany(models.EmployeePresence, { foreignKey: 'idEmployee' })
+      Employee.hasMany(models.StudentGrades, { foreignKey: 'idEmployee' })
     }
   }
   Employee.init(
@@ -28,9 +45,8 @@ module.exports = (sequelize, DataTypes) => {
       nip: { type: DataTypes.STRING, unique: true },
       password: DataTypes.STRING,
       name: DataTypes.STRING,
-      photo: DataTypes.STRING,
-      birth_place: DataTypes.STRING,
-      birth_date: DataTypes.DATEONLY,
+      birthPlace: DataTypes.STRING,
+      birthDate: DataTypes.DATEONLY,
       gender: DataTypes.STRING,
       religion: DataTypes.STRING,
       phone: DataTypes.STRING,
@@ -41,38 +57,37 @@ module.exports = (sequelize, DataTypes) => {
       kelurahan: DataTypes.STRING,
       kecamatan: DataTypes.STRING,
       kabupaten: DataTypes.STRING,
-      postal_code: DataTypes.STRING,
+      postalCode: DataTypes.STRING,
       nuptk: DataTypes.STRING,
-      study_expertise: DataTypes.STRING,
-      ptk_type: DataTypes.UUID,
-      optional_task: DataTypes.STRING,
-      employee_status: DataTypes.UUID,
-      active_status: DataTypes.STRING,
-      marriage_status: DataTypes.STRING,
+      studyExpertise: DataTypes.STRING,
+      idPtkType: DataTypes.UUID,
+      optionalTask: DataTypes.STRING,
+      idEmployeeStatus: DataTypes.UUID,
+      activeStatus: DataTypes.BOOLEAN,
+      marriageStatus: DataTypes.BOOLEAN,
       photo: DataTypes.STRING,
       nik: DataTypes.STRING,
-      sk_cpns: DataTypes.STRING,
-      cpns_date: DataTypes.STRING,
-      appointment_sk: DataTypes.STRING,
-      appointment_tmt: DataTypes.STRING,
-      appointment_agency: DataTypes.STRING,
-      class: DataTypes.STRING,
-      salary_source: DataTypes.STRING,
-      laboratory_expert: DataTypes.STRING,
-      biological_mother_name: DataTypes.STRING,
-      spouse_name: DataTypes.STRING,
-      spouse_nip: DataTypes.STRING,
-      spouse_work: DataTypes.STRING,
-      tmt_pns: DataTypes.STRING,
-      headmaster_license: DataTypes.STRING,
-      built_schools_count: DataTypes.STRING,
-      supervision_training: DataTypes.STRING,
-      kk_handle: DataTypes.STRING,
-      breile_expert: DataTypes.STRING,
-      sign_lang_expert: DataTypes.STRING,
+      skCpns: DataTypes.STRING,
+      cpnsDate: DataTypes.STRING,
+      appointmentSk: DataTypes.STRING,
+      appointmentTmt: DataTypes.STRING,
+      appointmentAgency: DataTypes.STRING,
+      idGrade: DataTypes.STRING,
+      salarySource: DataTypes.STRING,
+      laboratoryExpert: DataTypes.STRING,
+      biologicalMotherName: DataTypes.STRING,
+      spouseName: DataTypes.STRING,
+      spouseNip: DataTypes.STRING,
+      spouseWork: DataTypes.STRING,
+      tmtPns: DataTypes.STRING,
+      headmasterLicense: DataTypes.STRING,
+      builtSchoolsCount: DataTypes.INTEGER,
+      supervisionTraining: DataTypes.STRING,
+      kkHandle: DataTypes.STRING,
+      breileExpert: DataTypes.STRING,
+      signLangExpert: DataTypes.STRING,
       citizenship: DataTypes.STRING,
-      niy: DataTypes.STRING,
-      nigk: DataTypes.STRING,
+      niynigk: DataTypes.STRING,
       npwp: DataTypes.STRING,
     },
     {
@@ -83,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
 
   // Adding a "beforeCreate" hook to generate UUID for the "id" field
   Employee.beforeCreate((instance, options) => {
-    instance.id = uuidv4()
+    instance.id = uuid()
   })
 
   return Employee

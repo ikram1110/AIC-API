@@ -1,16 +1,17 @@
 const {
-  Classroom,
+  LessonSchedule,
+  Lesson,
   Unit,
-  Employee,
-  Department,
-  Building,
+  AcademicYear,
+  Classroom,
   Room,
+  Employee,
 } = require('@models')
 
-class ClassroomController {
+class LessonScheduleController {
   async create(req, res) {
     try {
-      const data = await Classroom.create(req.body)
+      const data = await LessonSchedule.create(req.body)
       res.status(201).json(data)
     } catch (error) {
       console.log(error)
@@ -23,7 +24,7 @@ class ClassroomController {
     try {
       let data = null
       if (id === undefined) {
-        data = await Classroom.findAll({
+        data = await LessonSchedule.findAll({
           include: [
             {
               model: Unit,
@@ -31,18 +32,18 @@ class ClassroomController {
               attributes: ['name'],
             },
             {
-              model: Employee,
-              as: 'employee',
+              model: AcademicYear,
+              as: 'academicYear',
               attributes: ['name'],
             },
             {
-              model: Department,
-              as: 'department',
+              model: Classroom,
+              as: 'classroom',
               attributes: ['name'],
             },
             {
-              model: Building,
-              as: 'building',
+              model: Lesson,
+              as: 'lesson',
               attributes: ['name'],
             },
             {
@@ -50,14 +51,19 @@ class ClassroomController {
               as: 'room',
               attributes: ['name'],
             },
+            {
+              model: Employee,
+              as: 'employee',
+              attributes: ['name'],
+            },
           ],
-          order: [['code', 'ASC']],
+          order: [['createdAt', 'DESC']],
         })
       } else {
-        data = await Classroom.findByPk(id)
+        data = await LessonSchedule.findByPk(id)
       }
       if (!data) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'LessonSchedule not found' })
       } else {
         res.status(200).json(data)
       }
@@ -70,12 +76,15 @@ class ClassroomController {
   async update(req, res) {
     const { id } = req.params
     try {
-      const [updatedRowsCount, updatedRows] = await Classroom.update(req.body, {
-        where: { id },
-        returning: true,
-      })
+      const [updatedRowsCount, updatedRows] = await LessonSchedule.update(
+        req.body,
+        {
+          where: { id },
+          returning: true,
+        }
+      )
       if (updatedRowsCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'LessonSchedule not found' })
       } else {
         res.status(200).json(updatedRows[0])
       }
@@ -88,9 +97,9 @@ class ClassroomController {
   async delete(req, res) {
     const { id } = req.params
     try {
-      const deletedRowCount = await Classroom.destroy({ where: { id } })
+      const deletedRowCount = await LessonSchedule.destroy({ where: { id } })
       if (deletedRowCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'LessonSchedule not found' })
       } else {
         res.status(204).end()
       }
@@ -101,5 +110,5 @@ class ClassroomController {
   }
 }
 
-const classroomController = new ClassroomController()
-module.exports = classroomController
+const lessonScheduleController = new LessonScheduleController()
+module.exports = lessonScheduleController

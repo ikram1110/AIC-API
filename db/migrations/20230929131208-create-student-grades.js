@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Classrooms', {
+    await queryInterface.createTable('StudentGrades', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -10,32 +10,34 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
       },
       idUnit: {
-        allowNull: false,
         type: Sequelize.UUID,
       },
-      code: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
+      idAcademicYear: {
+        type: Sequelize.UUID,
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING,
+      idClassroom: {
+        type: Sequelize.UUID,
+      },
+      idLessonSchedule: {
+        type: Sequelize.UUID,
       },
       idEmployee: {
         type: Sequelize.UUID,
       },
-      idDepartment: {
+      idStudent: {
         type: Sequelize.UUID,
       },
-      idBuilding: {
-        type: Sequelize.UUID,
+      assignGrade: {
+        type: Sequelize.FLOAT,
       },
-      idRoom: {
-        type: Sequelize.UUID,
+      quizGrade: {
+        type: Sequelize.FLOAT,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
+      midGrade: {
+        type: Sequelize.FLOAT,
+      },
+      finalGrade: {
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +50,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Classrooms')
+    await queryInterface.dropTable('StudentGrades')
   },
 }

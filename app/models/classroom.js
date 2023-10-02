@@ -15,6 +15,26 @@ module.exports = (sequelize, DataTypes) => {
         as: 'unit',
         foreignKey: 'idUnit',
       })
+      Classroom.belongsTo(models.Employee, {
+        as: 'employee',
+        foreignKey: 'idEmployee',
+      })
+      Classroom.belongsTo(models.Department, {
+        as: 'department',
+        foreignKey: 'idDepartment',
+      })
+      Classroom.belongsTo(models.Building, {
+        as: 'building',
+        foreignKey: 'idBuilding',
+      })
+      Classroom.belongsTo(models.Room, {
+        as: 'room',
+        foreignKey: 'idRoom',
+      })
+      Classroom.hasMany(models.LessonSchedule, { foreignKey: 'idClassroom' })
+      Classroom.hasMany(models.ValueRange, { foreignKey: 'idClassroom' })
+      Classroom.hasMany(models.StudentPresence, { foreignKey: 'idClassroom' })
+      Classroom.hasMany(models.StudentGrades, { foreignKey: 'idClassroom' })
     }
   }
   Classroom.init(
@@ -27,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       idUnit: DataTypes.UUID,
       code: { type: DataTypes.STRING, unique: true },
       name: DataTypes.STRING,
-      idTeacher: DataTypes.UUID,
+      idEmployee: DataTypes.UUID,
       idDepartment: DataTypes.UUID,
       idBuilding: DataTypes.UUID,
       idRoom: DataTypes.UUID,

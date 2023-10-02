@@ -1,16 +1,16 @@
 const {
-  Classroom,
+  Lesson,
   Unit,
-  Employee,
+  Curriculum,
   Department,
-  Building,
-  Room,
+  Employee,
+  LessonGroup,
 } = require('@models')
 
-class ClassroomController {
+class LessonController {
   async create(req, res) {
     try {
-      const data = await Classroom.create(req.body)
+      const data = await Lesson.create(req.body)
       res.status(201).json(data)
     } catch (error) {
       console.log(error)
@@ -23,7 +23,7 @@ class ClassroomController {
     try {
       let data = null
       if (id === undefined) {
-        data = await Classroom.findAll({
+        data = await Lesson.findAll({
           include: [
             {
               model: Unit,
@@ -31,8 +31,8 @@ class ClassroomController {
               attributes: ['name'],
             },
             {
-              model: Employee,
-              as: 'employee',
+              model: Curriculum,
+              as: 'curriculum',
               attributes: ['name'],
             },
             {
@@ -41,23 +41,23 @@ class ClassroomController {
               attributes: ['name'],
             },
             {
-              model: Building,
-              as: 'building',
+              model: Employee,
+              as: 'employee',
               attributes: ['name'],
             },
             {
-              model: Room,
-              as: 'room',
+              model: LessonGroup,
+              as: 'lessonGroup',
               attributes: ['name'],
             },
           ],
-          order: [['code', 'ASC']],
+          order: [['createdAt', 'DESC']],
         })
       } else {
-        data = await Classroom.findByPk(id)
+        data = await Lesson.findByPk(id)
       }
       if (!data) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'Lesson not found' })
       } else {
         res.status(200).json(data)
       }
@@ -70,12 +70,12 @@ class ClassroomController {
   async update(req, res) {
     const { id } = req.params
     try {
-      const [updatedRowsCount, updatedRows] = await Classroom.update(req.body, {
+      const [updatedRowsCount, updatedRows] = await Lesson.update(req.body, {
         where: { id },
         returning: true,
       })
       if (updatedRowsCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'Lesson not found' })
       } else {
         res.status(200).json(updatedRows[0])
       }
@@ -88,9 +88,9 @@ class ClassroomController {
   async delete(req, res) {
     const { id } = req.params
     try {
-      const deletedRowCount = await Classroom.destroy({ where: { id } })
+      const deletedRowCount = await Lesson.destroy({ where: { id } })
       if (deletedRowCount === 0) {
-        res.status(404).json({ message: 'Classroom not found' })
+        res.status(404).json({ message: 'Lesson not found' })
       } else {
         res.status(204).end()
       }
@@ -101,5 +101,5 @@ class ClassroomController {
   }
 }
 
-const classroomController = new ClassroomController()
-module.exports = classroomController
+const lessonController = new LessonController()
+module.exports = lessonController

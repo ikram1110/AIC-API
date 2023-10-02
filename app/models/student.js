@@ -15,7 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         as: 'unit',
         foreignKey: 'idUnit',
       })
-      Student.hasMany(models.StudentParent, { foreignKey: 'idStudent' })
+      Student.belongsTo(models.Classroom, {
+        as: 'classroom',
+        foreignKey: 'idClassroom',
+      })
+      Student.belongsTo(models.Department, {
+        as: 'department',
+        foreignKey: 'idDepartment',
+      })
+      Student.hasOne(models.StudentParent, { foreignKey: 'idStudent' })
+      Student.hasMany(models.StudentPresence, { foreignKey: 'idStudent' })
+      Student.hasMany(models.StudentGrades, { foreignKey: 'idStudent' })
     }
   }
   Student.init(
@@ -28,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       idUnit: DataTypes.UUID,
       idClassroom: DataTypes.UUID,
       idDepartment: DataTypes.UUID,
-      nipd: DataTypes.STRING,
+      nipd: { type: DataTypes.STRING, unique: true },
       nisn: { type: DataTypes.STRING, unique: true },
       name: DataTypes.STRING,
       generation: DataTypes.INTEGER,

@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('Employees', {
       id: {
         allowNull: false,
-        autoIncrement: false,
         primaryKey: true,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       idUnit: {
         type: Sequelize.UUID,
@@ -70,20 +70,20 @@ module.exports = {
       studyExpertise: {
         type: Sequelize.STRING,
       },
-      ptkType: {
+      idPtkType: {
         type: Sequelize.UUID,
       },
       optionalTask: {
         type: Sequelize.STRING,
       },
-      employeeStatus: {
+      idEmployeeStatus: {
         type: Sequelize.UUID,
       },
       activeStatus: {
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN,
       },
       marriageStatus: {
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN,
       },
       photo: {
         type: Sequelize.STRING,
@@ -106,8 +106,8 @@ module.exports = {
       appointmentAgency: {
         type: Sequelize.STRING,
       },
-      class: {
-        type: Sequelize.STRING,
+      idGrade: {
+        type: Sequelize.UUID,
       },
       salarySource: {
         type: Sequelize.STRING,
@@ -134,7 +134,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       builtSchoolsCount: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       supervisionTraining: {
         type: Sequelize.STRING,
@@ -151,10 +151,7 @@ module.exports = {
       citizenship: {
         type: Sequelize.STRING,
       },
-      niy: {
-        type: Sequelize.STRING,
-      },
-      nigk: {
+      niynigk: {
         type: Sequelize.STRING,
       },
       npwp: {

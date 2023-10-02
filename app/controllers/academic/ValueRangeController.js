@@ -1,11 +1,11 @@
-const { Room, Building } = require('@models')
+const { ValueRange, Unit, Classroom } = require('@models')
 
-class RoomController {
+class ValueRangeController {
   async create(req, res) {
     try {
-      const data = await Room.create(req.body)
+      const data = await ValueRange.create(req.body)
       res.status(201).json(data)
-    } catch (e) {
+    } catch (error) {
       console.log(error)
       res.status(500).json({ error: 'Create data failed' })
     }
@@ -16,21 +16,26 @@ class RoomController {
     try {
       let data = null
       if (id === undefined) {
-        data = await Room.findAll({
+        data = await ValueRange.findAll({
           include: [
             {
-              model: Building,
-              as: 'building',
+              model: Unit,
+              as: 'unit',
+              attributes: ['name'],
+            },
+            {
+              model: Classroom,
+              as: 'classroom',
               attributes: ['name'],
             },
           ],
-          order: [['code', 'ASC']],
+          order: [['createdAt', 'DESC']],
         })
       } else {
-        data = await Room.findByPk(id)
+        data = await ValueRange.findByPk(id)
       }
       if (!data) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'ValueRange not found' })
       } else {
         res.status(200).json(data)
       }
@@ -43,12 +48,15 @@ class RoomController {
   async update(req, res) {
     const { id } = req.params
     try {
-      const [updatedRowsCount, updatedRows] = await Room.update(req.body, {
-        where: { id },
-        returning: true,
-      })
+      const [updatedRowsCount, updatedRows] = await ValueRange.update(
+        req.body,
+        {
+          where: { id },
+          returning: true,
+        }
+      )
       if (updatedRowsCount === 0) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'ValueRange not found' })
       } else {
         res.status(200).json(updatedRows[0])
       }
@@ -61,9 +69,9 @@ class RoomController {
   async delete(req, res) {
     const { id } = req.params
     try {
-      const deletedRowCount = await Room.destroy({ where: { id } })
+      const deletedRowCount = await ValueRange.destroy({ where: { id } })
       if (deletedRowCount === 0) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'ValueRange not found' })
       } else {
         res.status(204).end()
       }
@@ -74,5 +82,5 @@ class RoomController {
   }
 }
 
-const roomController = new RoomController()
-module.exports = roomController
+const valueRangeController = new ValueRangeController()
+module.exports = valueRangeController

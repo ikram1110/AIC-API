@@ -1,4 +1,4 @@
-const { StudentParent } = require('@models')
+const { StudentParent, Student } = require('@models')
 
 class StudentParentController {
   async create(req, res) {
@@ -6,7 +6,8 @@ class StudentParentController {
       const data = await StudentParent.create(req.body)
       res.status(201).json(data)
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Create data failed' })
     }
   }
 
@@ -15,7 +16,15 @@ class StudentParentController {
     try {
       let data = null
       if (id === undefined) {
-        data = await StudentParent.findAll()
+        data = await StudentParent.findAll({
+          include: [
+            {
+              model: Student,
+              as: 'student',
+              attributes: ['name'],
+            },
+          ],
+        })
       } else {
         data = await StudentParent.findByPk(id)
       }
@@ -25,7 +34,8 @@ class StudentParentController {
         res.status(200).json(data)
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Read data failed' })
     }
   }
 
@@ -45,7 +55,8 @@ class StudentParentController {
         res.status(200).json(updatedRows[0])
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Update data failed' })
     }
   }
 
@@ -59,7 +70,8 @@ class StudentParentController {
         res.status(204).end()
       }
     } catch (error) {
-      res.status(500).json({ error: error.errors[0].message })
+      console.log(error)
+      res.status(500).json({ error: 'Delete data failed' })
     }
   }
 }

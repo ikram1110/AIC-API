@@ -1,11 +1,11 @@
-const { Room, Building } = require('@models')
+const { PtkType } = require('@models')
 
-class RoomController {
+class PtkTypeController {
   async create(req, res) {
     try {
-      const data = await Room.create(req.body)
+      const data = await PtkType.create(req.body)
       res.status(201).json(data)
-    } catch (e) {
+    } catch (error) {
       console.log(error)
       res.status(500).json({ error: 'Create data failed' })
     }
@@ -16,21 +16,12 @@ class RoomController {
     try {
       let data = null
       if (id === undefined) {
-        data = await Room.findAll({
-          include: [
-            {
-              model: Building,
-              as: 'building',
-              attributes: ['name'],
-            },
-          ],
-          order: [['code', 'ASC']],
-        })
+        data = await PtkType.findAll({ order: [['createdAt', 'ASC']] })
       } else {
-        data = await Room.findByPk(id)
+        data = await PtkType.findByPk(id)
       }
       if (!data) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'PTK Type not found' })
       } else {
         res.status(200).json(data)
       }
@@ -43,12 +34,12 @@ class RoomController {
   async update(req, res) {
     const { id } = req.params
     try {
-      const [updatedRowsCount, updatedRows] = await Room.update(req.body, {
+      const [updatedRowsCount, updatedRows] = await PtkType.update(req.body, {
         where: { id },
         returning: true,
       })
       if (updatedRowsCount === 0) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'PTK Type not found' })
       } else {
         res.status(200).json(updatedRows[0])
       }
@@ -61,9 +52,9 @@ class RoomController {
   async delete(req, res) {
     const { id } = req.params
     try {
-      const deletedRowCount = await Room.destroy({ where: { id } })
+      const deletedRowCount = await PtkType.destroy({ where: { id } })
       if (deletedRowCount === 0) {
-        res.status(404).json({ message: 'Room not found' })
+        res.status(404).json({ message: 'PTK Type not found' })
       } else {
         res.status(204).end()
       }
@@ -74,5 +65,5 @@ class RoomController {
   }
 }
 
-const roomController = new RoomController()
-module.exports = roomController
+const ptkTypeController = new PtkTypeController()
+module.exports = ptkTypeController
